@@ -3,6 +3,11 @@
 #include <algorithm>  // std::min
 #include "esphome/core/helpers.h"
 
+#define PUBLISH_STATE(sensor, value) \
+    if (sensor !=  nullptr) { \
+        this->publish_state_(sensor, value); \
+    }
+
 namespace esphome {
 namespace victron {
 
@@ -643,39 +648,39 @@ void VictronComponent::handle_value_() {
   int value;
 
   if (label_ == "V") {
-    this->publish_state_(battery_voltage_sensor_, atoi(value_.c_str()) / 1000.0f);  // NOLINT(cert-err34-c)
+    PUBLISH_STATE(battery_voltage_sensor_, (atoi(value_.c_str()) / 1000.0f));  // NOLINT(cert-err34-c)
     return;
   }
 
   if (label_ == "V2") {
     // mV to V
-    this->publish_state_(battery_voltage_2_sensor_, atoi(value_.c_str()) / 1000.0f);  // NOLINT(cert-err34-c)
+    PUBLISH_STATE(battery_voltage_2_sensor_, (atoi(value_.c_str()) / 1000.0f));  // NOLINT(cert-err34-c)
     return;
   }
 
   if (label_ == "V3") {
     // mV to V
-    this->publish_state_(battery_voltage_3_sensor_, atoi(value_.c_str()) / 1000.0f);  // NOLINT(cert-err34-c)
+    PUBLISH_STATE(battery_voltage_3_sensor_, (atoi(value_.c_str()) / 1000.0f));  // NOLINT(cert-err34-c)
     return;
   }
 
   if (label_ == "VS") {
     // mV to V
-    this->publish_state_(auxiliary_battery_voltage_sensor_, atoi(value_.c_str()) / 1000.0f);  // NOLINT(cert-err34-c)
+    PUBLISH_STATE(auxiliary_battery_voltage_sensor_, (atoi(value_.c_str()) / 1000.0f));  // NOLINT(cert-err34-c)
     return;
   }
 
   if (label_ == "VM") {
     // mV to V
-    this->publish_state_(midpoint_voltage_of_the_battery_bank_sensor_,
-                         atoi(value_.c_str()) / 1000.0f);  // NOLINT(cert-err34-c)
+    PUBLISH_STATE(this->publish_state_(midpoint_voltage_of_the_battery_bank_sensor_,
+                         (atoi(value_.c_str()) / 1000.0f));  // NOLINT(cert-err34-c)
     return;
   }
 
   if (label_ == "DM") {
     // Per mill to %
-    this->publish_state_(midpoint_deviation_of_the_battery_bank_sensor_,
-                         atoi(value_.c_str()) * 0.10f);  // NOLINT(cert-err34-c)
+    PUBLISH_STATE(midpoint_deviation_of_the_battery_bank_sensor_,
+                         (atoi(value_.c_str()) * 0.10f));  // NOLINT(cert-err34-c)
     return;
   }
 
