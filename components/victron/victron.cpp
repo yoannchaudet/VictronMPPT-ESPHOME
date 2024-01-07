@@ -672,7 +672,7 @@ void VictronComponent::handle_value_() {
 
   if (label_ == "VM") {
     // mV to V
-    PUBLISH_STATE(this->publish_state_(midpoint_voltage_of_the_battery_bank_sensor_,
+    PUBLISH_STATE(midpoint_voltage_of_the_battery_bank_sensor_,
                          (atoi(value_.c_str()) / 1000.0f));  // NOLINT(cert-err34-c)
     return;
   }
