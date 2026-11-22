@@ -94,7 +94,9 @@ jobs:
           sed -i 's|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|esphome/Improv@1.2.1|' platformio.ini
         working-directory: ${{ env.esphome_directory }}
       - name: Suggest changes
-        run: script/ci-suggest-changes
+        run: |
+          git status --short
+          script/ci-suggest-changes
         working-directory: ${{ env.esphome_directory }}
 
   lint-python:
