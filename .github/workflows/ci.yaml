@@ -88,7 +88,9 @@ jobs:
         run: |
           command -v clang-tidy-11
           command -v clang-format-11
+          sed -i 's/idedata\["cxx_flags"\]\.split(" ")/idedata["cxx_flags"]/' script/clang-tidy
           script/lint-cpp -c
+          sed -i 's/idedata\["cxx_flags"\]/idedata["cxx_flags"].split(" ")/' script/clang-tidy
           sed -i 's|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|esphome/Improv@1.2.1|' platformio.ini
         working-directory: ${{ env.esphome_directory }}
       - name: Suggest changes
