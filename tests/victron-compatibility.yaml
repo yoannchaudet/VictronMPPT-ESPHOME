@@ -1,0 +1,78 @@
+substitutions:
+  board: d1_mini
+
+esphome:
+  name: victron-compatibility
+
+esp8266:
+  board: ${board}
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+
+logger:
+  baud_rate: 0
+
+uart:
+  id: victron_uart
+  rx_pin: D7
+  baud_rate: 19200
+
+victron:
+  id: victron_hub
+  uart_id: victron_uart
+
+sensor:
+  - platform: victron
+    victron_id: victron_hub
+    battery_voltage:
+      name: Battery voltage
+    panel_power:
+      name: Panel power
+
+binary_sensor:
+  - platform: victron
+    victron_id: victron_hub
+    load_state:
+      name: Load state
+    relay_state:
+      name: Relay state
+      icon: mdi:relay
+
+text_sensor:
+  - platform: victron
+    victron_id: victron_hub
+    charging_mode:
+      name: Charging mode
+      id: charging_mode
+      icon: mdi:battery
+      filters:
+        - to_upper:
+    error:
+      name: Error
+    warning:
+      name: Warning
+    tracking_mode:
+      name: Tracking mode
+    device_mode:
+      name: Device mode
+    firmware_version:
+      name: Firmware version
+    firmware_version_24bit:
+      name: Firmware version 24bit
+    device_type:
+      name: Device type
+    serial_number:
+      name: Serial number
+    alarm_condition_active:
+      name: Alarm condition active
+    alarm_reason:
+      name: Alarm reason
+    model_description:
+      name: Model description
+    dc_monitor_mode:
+      name: DC monitor mode
+    off_reason:
+      name: Off reason
