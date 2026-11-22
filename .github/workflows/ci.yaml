@@ -72,7 +72,9 @@ jobs:
       # Set up the pio project so that the cpp checks know how files are compiled
       # (build flags, libraries etc)
       - name: Set up platformio environment
-        run: pio init --ide vscode
+        run: |
+          sed -i 's|esphome/Improv@1.2.1|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|' platformio.ini
+          pio init --ide vscode
         working-directory: ${{ env.esphome_directory }}
 
       - name: Register problem matchers
@@ -92,7 +94,7 @@ jobs:
       esphome_version: 2022.9.3
     # Don't use the esphome-lint docker image because it may contain outdated requirements.
     # This way, all dependencies are cached via the cache action.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
