@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     # cpp lint job runs with esphome-lint docker image so that clang-format-*
     # doesn't have to be installed
-    container: esphome/esphome-lint:latest
+    container: esphome/esphome-lint:2022.9.3
     steps:
       - uses: actions/checkout@v4
       - name: 💣 Clone esphome project
@@ -40,7 +40,9 @@ jobs:
         working-directory: ${{ env.esphome_directory }}
 
       - name: Run clang-format
-        run: script/clang-format -i
+        run: |
+          command -v clang-format-11
+          script/clang-format -i
         working-directory: ${{ env.esphome_directory }}
 
       - name: Suggest changes
@@ -54,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     # cpp lint job runs with esphome-lint docker image so that clang-format-*
     # doesn't have to be installed
-    container: esphome/esphome-lint:latest
+    container: esphome/esphome-lint:2022.9.3
     steps:
       - uses: actions/checkout@v4
 
@@ -75,6 +77,7 @@ jobs:
         run: |
           sed -i 's|esphome/Improv@1.2.1|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|' platformio.ini
           pio init --ide vscode
+          sed -i 's|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|esphome/Improv@1.2.1|' platformio.ini
         working-directory: ${{ env.esphome_directory }}
 
       - name: Register problem matchers
@@ -82,7 +85,10 @@ jobs:
           echo "::add-matcher::.github/workflows/matchers/clang-tidy.json"
           echo "::add-matcher::.github/workflows/matchers/gcc.json"
       - name: Run lint-cpp
-        run: script/lint-cpp -c
+        run: |
+          command -v clang-tidy-11
+          command -v clang-format-11
+          script/lint-cpp -c
         working-directory: ${{ env.esphome_directory }}
       - name: Suggest changes
         run: script/ci-suggest-changes
@@ -121,7 +127,7 @@ jobs:
         working-directory: ${{ env.esphome_directory }}
 
       - name: Add missing requirements
-        run: pip3 install setuptools wheel
+        run: pip3 install 'pip<25.3' setuptools wheel
       - name: Set up python environment
         run: VIRTUAL_ENV=false script/setup
         working-directory: ${{ env.esphome_directory }}
