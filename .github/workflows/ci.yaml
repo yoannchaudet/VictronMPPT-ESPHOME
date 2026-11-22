@@ -27,9 +27,7 @@ jobs:
     # doesn't have to be installed
     container: esphome/esphome-lint:latest
     steps:
-      - uses: actions/checkout@v2
-      # Set up the pio project so that the cpp checks know how files are compiled
-      # (build flags, libraries etc)
+      - uses: actions/checkout@v4
       - name: 💣 Clone esphome project
         run: git clone -b ${{ env.esphome_version }} https://github.com/esphome/esphome.git
       - name: 💣 Copy component into the esphome project
@@ -39,10 +37,6 @@ jobs:
           git config user.email "ci@github.com"
           git add .
           git commit -a -m "Add external component"
-        working-directory: ${{ env.esphome_directory }}
-
-      - name: Set up platformio environment
-        run: pio init --ide vscode
         working-directory: ${{ env.esphome_directory }}
 
       - name: Run clang-format
@@ -62,7 +56,7 @@ jobs:
     # doesn't have to be installed
     container: esphome/esphome-lint:latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: 💣 Clone esphome project
         run: git clone -b ${{ env.esphome_version }} https://github.com/esphome/esphome.git
@@ -100,13 +94,13 @@ jobs:
     # This way, all dependencies are cached via the cache action.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: '3.9'
       - name: Cache pip modules
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: esphome-pip-3.9-${{ hashFiles('setup.py') }}
