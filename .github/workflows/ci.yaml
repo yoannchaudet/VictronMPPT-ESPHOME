@@ -147,20 +147,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: ⤵️ Check out configuration from GitHub
-        uses: actions/checkout@v2
-      - name: Setup Python 3.9
-        uses: actions/setup-python@v1
+        uses: actions/checkout@v4
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: '3.13'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install esphome
+          pip install esphome==2026.11.0
           pip list
           esphome version
       - name: Write secrets.yaml
         shell: bash
-        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml; cp secrets.yaml tests'
+        run: |
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nota_password: password" > secrets.yaml
+          echo "api_encryption_key: $(openssl rand -base64 32)" >> secrets.yaml
+          cp secrets.yaml tests
       - run: |
           esphome -s external_components_source components config smartsolar-mppt-esp8266-example.yaml
       - run: |
@@ -178,10 +181,14 @@ jobs:
       - run: |
           esphome -s external_components_source components config debug-esp32-example.yaml
       - run: |
+          esphome -s external_components_source components config multi-rs-esp8266-example.yaml
+          esphome config tests/victron-compatibility.yaml
+      - run: |
           esphome -s external_components_source components config tests/emulator-all-keys.yaml
           esphome -s external_components_source components config tests/fake-bmv600.yaml
           esphome -s external_components_source components config tests/fake-bmv700.yaml
           esphome -s external_components_source components config tests/fake-bmv710.yaml
+          esphome -s external_components_source components config tests/fake-bmv712.yaml
           esphome -s external_components_source components config tests/fake-multi-rs-solar.yaml
           esphome -s external_components_source components config tests/fake-phoenix-inverter.yaml
           esphome -s external_components_source components config tests/fake-smartsolar-mppt.yaml
@@ -191,27 +198,27 @@ jobs:
     needs: [esphome-config]
     steps:
       - name: ⤵️ Check out configuration from GitHub
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Cache .esphome
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .esphome
           key: esphome-compile-esphome-${{ hashFiles('*.yaml') }}
           restore-keys: esphome-compile-esphome-
       - name: Cache .pioenvs
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: .pioenvs
           key: esphome-compile-pioenvs-${{ hashFiles('*.yaml') }}
           restore-keys: esphome-compile-pioenvs-
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v1
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: '3.13'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install esphome
+          pip install esphome==2026.11.0
           pip list
           esphome version
       - name: Register problem matchers
@@ -220,7 +227,11 @@ jobs:
           echo "::add-matcher::.github/workflows/matchers/python.json"
       - name: Write secrets.yaml
         shell: bash
-        run: 'echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password" > secrets.yaml'
+        run: |
+          echo -e "wifi_ssid: ssid\nwifi_password: password\nmqtt_host: host\nmqtt_username: username\nmqtt_password: password\nota_password: password" > secrets.yaml
+          echo "api_encryption_key: $(openssl rand -base64 32)" >> secrets.yaml
+      - run: |
+          esphome compile tests/victron-compatibility.yaml
       - run: |
           esphome -s external_components_source components compile smartsolar-mppt-esp8266-example.yaml
       - run: |
@@ -233,5 +244,7 @@ jobs:
           esphome -s external_components_source components compile phoenix-charger-esp8266-example.yaml
       - run: |
           esphome -s external_components_source components compile phoenix-inverter-esp8266-example.yaml
+      - run: |
+          esphome -s external_components_source components compile multi-rs-esp8266-example.yaml
       - run: |
           esphome -s external_components_source components compile debug-esp32-example.yaml

@@ -23,7 +23,7 @@ All Victron devices providing a ve.direct port.
 
 ## Requirements
 
-* [ESPHome 2021.10 or higher](https://github.com/esphome/esphome/releases).
+* [ESPHome 2026.11.0](https://github.com/esphome/esphome/releases/tag/2026.11.0).
 * Generic ESP32 or ESP8266 board
 
 ## Schematics
@@ -69,7 +69,7 @@ If you are unsure about to pin order please measure the voltage between GND and 
 You can install this component with [ESPHome external components feature](https://esphome.io/components/external_components.html) like this:
 ```yaml
 external_components:
-  - source: github://KinDR007/VictronMPPT-ESPHOME@main
+  - source: github://yoannchaudet/VictronMPPT-ESPHOME@main
 
 uart:
   id: uart_0
@@ -93,14 +93,14 @@ sensor:
       name: "Battery current"
 ```
 
-or just use the `esp8266-example.yaml` as proof of concept:
+Use `smartsolar-mppt-esp8266-example.yaml` as a starting point:
 
 ```bash
 # Install esphome
 pip3 install esphome
 
 # Clone this external component
-git clone https://github.com/KinDR007/VictronMPPT-ESPHOME.git
+git clone https://github.com/yoannchaudet/VictronMPPT-ESPHOME.git
 cd VictronMPPT-ESPHOME
 
 # Create a secret.yaml containing some setup specific secrets
@@ -114,9 +114,12 @@ wifi_password: MY_WIFI_PASSWORD
 EOF
 
 # Validate the configuration, create a binary, upload it, and start logs
-esphome run esp8266-example.yaml
+esphome run smartsolar-mppt-esp8266-example.yaml
 
 ```
+
+The advanced example also requires `api_encryption_key` and `ota_password` in
+`secrets.yaml`. Generate a unique API encryption key for your device.
 
 The `uart_id` and `victron_id` is optional if you use a single UART / victron device. All sensors are optional.
 

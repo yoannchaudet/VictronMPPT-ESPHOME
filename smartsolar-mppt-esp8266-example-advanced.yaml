@@ -1,5 +1,5 @@
 substitutions:
-  external_components_source: github://KinDR007/VictronMPPT-ESPHOME@main
+  external_components_source: github://yoannchaudet/VictronMPPT-ESPHOME@main
   lower_devicename: "victron"
   devicename: "SmartSolar_150_35"
   config_version: "v2021.05.30"
@@ -8,7 +8,8 @@ substitutions:
 
 esphome:
   name: "${lower_devicename}"
-  platform: ESP8266
+
+esp8266:
   board: d1_mini
   # board: nodemcuv2
 
@@ -31,15 +32,16 @@ captive_portal:
 logger:
   baud_rate: 0
   # level: VERY_VERBOSE
-  esp8266_store_log_strings_in_flash: false
 
 # Enable Home Assistant API
 api:
-  password: "pass"
+  encryption:
+    key: !secret api_encryption_key
   reboot_timeout: 0s
 
 ota:
-  password: "pass"
+  - platform: esphome
+    password: !secret ota_password
 
 web_server:
   port: 80
