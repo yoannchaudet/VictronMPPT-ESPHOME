@@ -75,6 +75,7 @@ jobs:
       # (build flags, libraries etc)
       - name: Set up platformio environment
         run: |
+          pip3 install 'platformio==6.1.18'
           sed -i 's|esphome/Improv@1.2.1|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|' platformio.ini
           pio init --ide vscode
           sed -i 's|https://github.com/improv-wifi/sdk-cpp.git#v1.2.1|esphome/Improv@1.2.1|' platformio.ini
